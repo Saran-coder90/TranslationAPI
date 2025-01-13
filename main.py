@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Response
 from pydantic import BaseModel
 from deep_translator import GoogleTranslator
 
@@ -12,6 +12,9 @@ class TranslationRequest(BaseModel):
 async def get_translated_text(from_language: str, request: TranslationRequest):
     try:
         translated = GoogleTranslator(source=from_language, target=request.to).translate(request.text)
-        return {"original_text": request.text, "translated_text": translated}
+        return {"translated_text": translated, "statusCode" : 200}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Translation failed: {str(e)}")
+        return Response(
+            statusCode=500,
+            translated_text = None
+        )
